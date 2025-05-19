@@ -42,12 +42,18 @@ namespace Kursach
 
         private void AddTaskButton_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(AddTaskNameValue.Text))
+            {
+                MessageBox.Show("Пожалуйста, введите название задачи.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             TestUC childForm = null;
             childForm = new TestUC(
                 () => RemoveTask(childForm),
                 () =>
                 {
-                    HistoryLog.Add($"Задача '{childForm.TaskName}' отмечена как {(AddTaskCheckValue.Checked ? "выполненная" : "невыполненная")}.");
+                    HistoryLog.Add($"Задача '{childForm.TaskName}' отмечена как {(childForm.IsFinished ? "выполненная" : "невыполненная")}.");
                     SortTaskList();
                 });
             childForm.IsFinished = AddTaskCheckValue.Checked;
@@ -130,7 +136,8 @@ namespace Kursach
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении файлов: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Не удалось сохранить файл. Пожалуйста, проверьте путь и права доступа. Ошибка: {ex.Message}",
+                    "Ошибка сохранения", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -164,7 +171,7 @@ namespace Kursach
                             () => RemoveTask(childForm),
                             () =>
                             {
-                                HistoryLog.Add($"Задача '{childForm.TaskName}' отмечена как {(isFinished ? "выполненная" : "невыполненная")}.");
+                                HistoryLog.Add($"Задача '{taskName}' отмечена как {(isFinished ? "выполненная" : "невыполненная")}.");
                                 SortTaskList();
                             });
                         childForm.IsFinished = isFinished;
@@ -180,7 +187,8 @@ namespace Kursach
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке файла задач: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Не удалось загрузить файл задач. Пожалуйста, убедитесь, что файл существует и имеет правильный формат. Ошибка: {ex.Message}",
+                    "Ошибка загрузки", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -215,7 +223,8 @@ namespace Kursach
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке файла истории: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Не удалось загрузить файл истории. Пожалуйста, убедитесь, что файл существует и имеет правильный формат. Ошибка: {ex.Message}",
+                    "Ошибка загрузки истории", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
